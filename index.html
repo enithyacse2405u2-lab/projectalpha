@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Networks Lab - C Programs</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 28px 16px;
+    background: #f3f6fb;
+    color: #172033;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .container { max-width: 1000px; margin: auto; }
+  header {
+    background: #183b70;
+    color: white;
+    padding: 26px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 8px; }
+  header p { margin: 0; color: #e1eaff; }
+  .program {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 18px 0;
+    box-shadow: 0 3px 14px rgba(20, 40, 80, .07);
+    border: 1px solid #e1e7f0;
+  }
+  h2 { font-size: 20px; margin: 0 0 14px; color: #183b70; }
+  pre {
+    margin: 14px 0 0;
+    padding: 18px;
+    overflow-x: auto;
+    background: #101827;
+    color: #e7edf7;
+    border-radius: 9px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  code { font-family: Consolas, "Courier New", monospace; }
+  .copy-btn {
+    background: #2459a6;
+    color: white;
+    border: 0;
+    border-radius: 7px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .copy-btn:hover { background: #17447f; }
+  footer { text-align: center; color: #667085; padding: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>Computer Networks Lab – C Programs</h1>
+  <p>All nine lab programs with their C source code.</p>
+</header>
+
+    <section class="program" id="program-1">
+      <h2>1. Data Encryption and Decryption</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    char text[100];
+    int key, i;
+
+    printf(&quot;Enter the text: &quot;);
+    fgets(text, sizeof(text), stdin);
+
+    printf(&quot;Enter the key: &quot;);
+    scanf(&quot;%d&quot;, &amp;key);
+
+    // Encryption
+    for(i = 0; text[i] != &#x27;\0&#x27;; i++)
+    {
+        if(text[i] != &#x27; &#x27; &amp;&amp; text[i] != &#x27;\n&#x27;)
+            text[i] = text[i] + key;
+    }
+
+    printf(&quot;Encrypted data: %s&quot;, text);
+
+    // Decryption
+    for(i = 0; text[i] != &#x27;\0&#x27;; i++)
+    {
+        if(text[i] != &#x27; &#x27; &amp;&amp; text[i] != &#x27;\n&#x27;)
+            text[i] = text[i] - key;
+    }
+
+    printf(&quot;Decrypted data: %s&quot;, text);
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-2">
+      <h2>2. Leaky Bucket Algorithm</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    int bucket_size, output_rate, n, packet;
+    int storage = 0;
+    int i;
+
+    printf(&quot;Enter bucket size: &quot;);
+    scanf(&quot;%d&quot;, &amp;bucket_size);
+
+    printf(&quot;Enter output rate: &quot;);
+    scanf(&quot;%d&quot;, &amp;output_rate);
+
+    printf(&quot;Enter number of packets: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    for(i = 1; i &lt;= n; i++)
+    {
+        printf(&quot;\\nEnter packet size: &quot;);
+        scanf(&quot;%d&quot;, &amp;packet);
+
+        if(packet &lt;= bucket_size - storage)
+        {
+            storage = storage + packet;
+            printf(&quot;Packet accepted\\n&quot;);
+        }
+        else
+        {
+            printf(&quot;Packet dropped\\n&quot;);
+        }
+
+        if(storage &gt;= output_rate)
+        {
+            storage = storage - output_rate;
+            printf(&quot;Packets sent: %d\\n&quot;, output_rate);
+        }
+        else
+        {
+            printf(&quot;Packets sent: %d\\n&quot;, storage);
+            storage = 0;
+        }
+
+        printf(&quot;Remaining packets: %d\\n&quot;, storage);
+    }
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-3">
+      <h2>3. Link State Routing Algorithm</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+#define INF 999
+
+int main()
+{
+    int n, cost[10][10], dist[10];
+    int visited[10] = {0};
+    int i, j, src, min, u;
+
+    printf(&quot;Enter number of nodes: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    printf(&quot;Enter cost matrix (999 for no connection):\\n&quot;);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        for(j = 0; j &lt; n; j++)
+            scanf(&quot;%d&quot;, &amp;cost[i][j]);
+    }
+
+    printf(&quot;Enter source node (0 to %d): &quot;, n - 1);
+    scanf(&quot;%d&quot;, &amp;src);
+
+    for(i = 0; i &lt; n; i++)
+        dist[i] = cost[src][i];
+
+    dist[src] = 0;
+    visited[src] = 1;
+
+    for(i = 1; i &lt; n; i++)
+    {
+        min = INF;
+        u = -1;
+
+        for(j = 0; j &lt; n; j++)
+        {
+            if(!visited[j] &amp;&amp; dist[j] &lt; min)
+            {
+                min = dist[j];
+                u = j;
+            }
+        }
+
+        if(u == -1)
+            break;
+
+        visited[u] = 1;
+
+        for(j = 0; j &lt; n; j++)
+        {
+            if(!visited[j] &amp;&amp; cost[u][j] != INF &amp;&amp;
+               dist[u] + cost[u][j] &lt; dist[j])
+                dist[j] = dist[u] + cost[u][j];
+        }
+    }
+
+    printf(&quot;\\nShortest Path from Node %d:\\n&quot;, src);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        if(dist[i] == INF)
+            printf(&quot;Node %d : Unreachable\\n&quot;, i);
+        else
+            printf(&quot;Node %d : %d\\n&quot;, i, dist[i]);
+    }
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-4">
+      <h2>4. Distance Vector Routing Algorithm</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+#define INF 999
+
+int main()
+{
+    int n, cost[10][10], dist[10][10];
+    int i, j, k;
+
+    printf(&quot;Enter number of nodes: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    printf(&quot;Enter cost matrix (999 for no connection):\\n&quot;);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        for(j = 0; j &lt; n; j++)
+        {
+            scanf(&quot;%d&quot;, &amp;cost[i][j]);
+            dist[i][j] = cost[i][j];
+        }
+    }
+
+    for(k = 0; k &lt; n; k++)
+    {
+        for(i = 0; i &lt; n; i++)
+        {
+            for(j = 0; j &lt; n; j++)
+            {
+                if(dist[i][k] != INF &amp;&amp; dist[k][j] != INF &amp;&amp;
+                   dist[i][k] + dist[k][j] &lt; dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    printf(&quot;\\nRouting Tables:\\n&quot;);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        printf(&quot;\\nRouter %d:\\n&quot;, i);
+        printf(&quot;Destination\\tDistance\\n&quot;);
+
+        for(j = 0; j &lt; n; j++)
+        {
+            if(dist[i][j] == INF)
+                printf(&quot;%d\\t\\tUnreachable\\n&quot;, j);
+            else
+                printf(&quot;%d\\t\\t%d\\n&quot;, j, dist[i][j]);
+        }
+    }
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-5">
+      <h2>5. Divide a Network into N Subnetworks</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    int a, b, c, n, bits = 0;
+    int prefix, hosts, i, block;
+
+    printf(&quot;Enter Network Address (A.B.C): &quot;);
+    scanf(&quot;%d.%d.%d&quot;, &amp;a, &amp;b, &amp;c);
+
+    printf(&quot;Enter Number of Subnets: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    if(a &lt; 0 || a &gt; 255 || b &lt; 0 || b &gt; 255 ||
+       c &lt; 0 || c &gt; 255 || n &lt; 1 || n &gt; 64)
+    {
+        printf(&quot;Invalid Input&quot;);
+        return 0;
+    }
+
+    while((1 &lt;&lt; bits) &lt; n)
+        bits++;
+
+    prefix = 24 + bits;
+    block = 256 / (1 &lt;&lt; bits);
+    hosts = block - 2;
+
+    printf(&quot;\\nSubnet Mask: 255.255.255.%d&quot;, 256 - block);
+    printf(&quot;\\nPrefix Length: /%d&quot;, prefix);
+    printf(&quot;\\nHosts per Subnet: %d\\n&quot;, hosts);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        int start = i * block;
+
+        printf(&quot;\\nSubnet %d&quot;, i + 1);
+        printf(&quot;\\nNetwork Address: %d.%d.%d.%d&quot;, a, b, c, start);
+        printf(&quot;\\nFirst Host: %d.%d.%d.%d&quot;, a, b, c, start + 1);
+        printf(&quot;\\nLast Host: %d.%d.%d.%d&quot;, a, b, c, start + block - 2);
+        printf(&quot;\\nBroadcast Address: %d.%d.%d.%d\\n&quot;,
+               a, b, c, start + block - 1);
+    }
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-6">
+      <h2>6. Dijkstra&#x27;s Shortest Path Algorithm</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+#define INF 999
+
+int main()
+{
+    int n, cost[10][10], dist[10];
+    int visited[10] = {0};
+    int i, j, src, min, u;
+
+    printf(&quot;Enter number of vertices: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    printf(&quot;Enter cost adjacency matrix:\\n&quot;);
+    printf(&quot;(Enter 999 for no connection)\\n&quot;);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        for(j = 0; j &lt; n; j++)
+            scanf(&quot;%d&quot;, &amp;cost[i][j]);
+    }
+
+    printf(&quot;Enter source vertex (0 to %d): &quot;, n - 1);
+    scanf(&quot;%d&quot;, &amp;src);
+
+    for(i = 0; i &lt; n; i++)
+        dist[i] = cost[src][i];
+
+    dist[src] = 0;
+    visited[src] = 1;
+
+    for(i = 1; i &lt; n; i++)
+    {
+        min = INF;
+        u = -1;
+
+        for(j = 0; j &lt; n; j++)
+        {
+            if(!visited[j] &amp;&amp; dist[j] &lt; min)
+            {
+                min = dist[j];
+                u = j;
+            }
+        }
+
+        if(u == -1)
+            break;
+
+        visited[u] = 1;
+
+        for(j = 0; j &lt; n; j++)
+        {
+            if(!visited[j] &amp;&amp; cost[u][j] != INF &amp;&amp;
+               dist[u] + cost[u][j] &lt; dist[j])
+                dist[j] = dist[u] + cost[u][j];
+        }
+    }
+
+    printf(&quot;\\nShortest distances from vertex %d:\\n&quot;, src);
+
+    for(i = 0; i &lt; n; i++)
+    {
+        if(dist[i] == INF)
+            printf(&quot;To vertex %d = Unreachable\\n&quot;, i);
+        else
+            printf(&quot;To vertex %d = %d\\n&quot;, i, dist[i]);
+    }
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-7">
+      <h2>7. Classless Addressing (CIDR)</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    unsigned int a, b, c, d, mask;
+    int prefix;
+
+    printf(&quot;Enter IP Address: &quot;);
+    scanf(&quot;%u.%u.%u.%u&quot;, &amp;a, &amp;b, &amp;c, &amp;d);
+
+    printf(&quot;Enter Prefix Length: &quot;);
+    scanf(&quot;%d&quot;, &amp;prefix);
+
+    if(a &gt; 255 || b &gt; 255 || c &gt; 255 || d &gt; 255 ||
+       prefix &lt; 0 || prefix &gt; 32)
+    {
+        printf(&quot;Invalid Input&quot;);
+        return 0;
+    }
+
+    if(prefix == 0)
+        mask = 0;
+    else
+        mask = 0xFFFFFFFFu &lt;&lt; (32 - prefix);
+
+    printf(&quot;\\nCIDR Address: %u.%u.%u.%u/%d&quot;, a, b, c, d, prefix);
+
+    printf(&quot;\\nSubnet Mask: %u.%u.%u.%u&quot;,
+           (mask &gt;&gt; 24) &amp; 255,
+           (mask &gt;&gt; 16) &amp; 255,
+           (mask &gt;&gt; 8) &amp; 255,
+           mask &amp; 255);
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-8">
+      <h2>8. Classful Addressing</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    int a, b, c, d;
+
+    printf(&quot;Enter IP Address: &quot;);
+    scanf(&quot;%d.%d.%d.%d&quot;, &amp;a, &amp;b, &amp;c, &amp;d);
+
+    if(a &lt; 0 || a &gt; 255 || b &lt; 0 || b &gt; 255 ||
+       c &lt; 0 || c &gt; 255 || d &lt; 0 || d &gt; 255)
+    {
+        printf(&quot;Invalid IP Address&quot;);
+    }
+    else if(a &gt;= 1 &amp;&amp; a &lt;= 126)
+    {
+        printf(&quot;Class A\\nSubnet Mask: 255.0.0.0&quot;);
+    }
+    else if(a == 127)
+    {
+        printf(&quot;Class A - Loopback Address&quot;);
+    }
+    else if(a &gt;= 128 &amp;&amp; a &lt;= 191)
+    {
+        printf(&quot;Class B\\nSubnet Mask: 255.255.0.0&quot;);
+    }
+    else if(a &gt;= 192 &amp;&amp; a &lt;= 223)
+    {
+        printf(&quot;Class C\\nSubnet Mask: 255.255.255.0&quot;);
+    }
+    else if(a &gt;= 224 &amp;&amp; a &lt;= 239)
+    {
+        printf(&quot;Class D - Multicast&quot;);
+    }
+    else if(a &gt;= 240 &amp;&amp; a &lt;= 255)
+    {
+        printf(&quot;Class E - Reserved&quot;);
+    }
+    else
+    {
+        printf(&quot;Reserved IP Address&quot;);
+    }
+
+    return 0;
+}</code></pre>
+    </section>
+
+    <section class="program" id="program-9">
+      <h2>9. Sliding Window Protocol using Go-Back-N</h2>
+      <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    int n, w, i, j, lost;
+
+    printf(&quot;Enter number of frames: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    printf(&quot;Enter window size: &quot;);
+    scanf(&quot;%d&quot;, &amp;w);
+
+    if(n &lt;= 0 || w &lt;= 0)
+    {
+        printf(&quot;Invalid Input&quot;);
+        return 0;
+    }
+
+    i = 1;
+
+    while(i &lt;= n)
+    {
+        printf(&quot;\\nSending frames: &quot;);
+
+        for(j = i; j &lt; i + w &amp;&amp; j &lt;= n; j++)
+            printf(&quot;%d &quot;, j);
+
+        printf(&quot;\\nEnter lost frame (0 for no loss): &quot;);
+        scanf(&quot;%d&quot;, &amp;lost);
+
+        if(lost &gt;= i &amp;&amp; lost &lt; j)
+        {
+            printf(&quot;Frame %d lost!\\n&quot;, lost);
+            printf(&quot;Go-Back-N: Resending from frame %d\\n&quot;, lost);
+            i = lost;
+        }
+        else
+        {
+            printf(&quot;All frames acknowledged.\\n&quot;);
+            i = j;
+        }
+    }
+
+    printf(&quot;\\nAll frames transmitted successfully!&quot;);
+
+    return 0;
+}</code></pre>
+    </section>
+<footer>Computer Networks Lab Programs</footer>
+</div>
+<script>
+function copyCode(button) {
+  const code = button.nextElementSibling.innerText;
+  navigator.clipboard.writeText(code).then(function () {
+    const oldText = button.innerText;
+    button.innerText = "Copied!";
+    setTimeout(function () { button.innerText = oldText; }, 1200);
+  }).catch(function () {
+    button.innerText = "Copy unavailable";
+  });
+}
+</script>
+</body>
+</html>
